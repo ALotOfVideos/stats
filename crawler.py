@@ -20,7 +20,7 @@ with open('api-key.txt', 'r') as f:
                 'apikey': f.read() }
 
 def getStats(time=datetime.now()):
-    files = { g: list() for g in game }
+    files = { g: dict() for g in game }
     stats = { g: dict() for g in game }
 
     for g in game:
@@ -28,8 +28,9 @@ def getStats(time=datetime.now()):
         url = api + endpoint['files'].format(g, alov[g], ','.join(categories))
         req = r.Request(url, headers=headers)
         response = r.urlopen(req)
-        for f in json.loads(response.read()).get('files', []):
-            files[g].append(f.get('file_id', 0))
+        l = json.loads(response.read()).get('files', [])
+        for f in l:
+            files[g][f.get('file_id', 0)] = f
 
         # get game id for later
         url = api + endpoint['games'].format(g)
@@ -37,19 +38,6 @@ def getStats(time=datetime.now()):
         response = r.urlopen(req)
         gameid[g] = json.loads(response.read()).get('id')
 
-    for g,v in files.items():
-        # get file details: name, size, etc
-        filenames = dict()
-        for i in v:
-            url = api + endpoint['details'].format(g, alov[g], i)
-            req = r.Request(url, headers=headers)
-            response = r.urlopen(req)
-            info = json.loads(response.read())
-            # del info["external_virus_scan_url"]
-            # del info["description"]
-            # filenames[i] = { 'name': info.get('name') }
-            filenames[i] = info
-        files[g] = filenames
 
     # match nexus' cache busting timestamp format
     timestamp = int(time.timestamp() * 1000000 / 300000000)

@@ -3,7 +3,7 @@
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
 from prometheus_client import start_http_server
 from datetime import datetime
-from time import time, sleep
+from time import time, sleep, strftime
 from crawler import getStats
 
 class ALOVCollector(object):
@@ -38,9 +38,10 @@ if __name__ == '__main__':
     print(f'Starting HTTP server on port {port}')
     start_http_server(port)
 
-    interval = 900
+    interval = 300
     print(f'Starting update loop every {interval} seconds')
     starttime=time()
     while True:
         sleep(interval - ((time() - starttime) % interval))
+        print(f"{strftime('%c')}: polling stats update")
         collector.update()
