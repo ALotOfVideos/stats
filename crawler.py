@@ -7,11 +7,13 @@ import csv
 from datetime import datetime
 
 api = 'https://api.nexusmods.com'
-stats_csv = 'https://staticstats.nexusmods.com/live_download_counts/files/{:d}.csv?cachesteamp={:d}'
+dl_stats_csv = 'https://staticstats.nexusmods.com/live_download_counts/files/{:d}.csv?cachesteamp={:d}'
+mod_stats_json = 'https://staticstats.nexusmods.com/mod_monthly_stats/{:d}/{:d}.json'
 
 endpoint = { 'files': '/v1/games/{:s}/mods/{:d}/files.json?category={:s}',
              'details': '/v1/games/{:s}/mods/{:d}/files/{:d}.json',
-             'games': '/v1/games/{:s}.json' }
+             'games': '/v1/games/{:s}.json',
+             'mod': '/v1/games/{:s}/mods/{:d}.json' }
 spoof = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36' }
 
 game = ['masseffect', 'masseffect2', 'masseffect3']
@@ -42,8 +44,17 @@ else:
         json.dump(gameid, f)
 
 def getStats(time=datetime.now()):
+    mod = dict()
     files = { g: dict() for g in game }
     stats = { g: dict() for g in game }
+    mod_stats = dict()
+
+    for g in game:
+        # get mod stats
+        url = api + endpoint['mod'].format(g, alov[g])
+        req = r.Request(url, headers=headers)
+        response = r.urlopen(req)
+        mod[g] = json.loads(response.read())
 
     for g in game:
         # get list of files
@@ -59,7 +70,7 @@ def getStats(time=datetime.now()):
 
     for g in game:
         # get download stats
-        with r.urlopen(r.Request(stats_csv.format(gameid[g],timestamp), headers=spoof)) as dl_csv:
+        with r.urlopen(r.Request(dl_stats_csv.format(gameid[g],timestamp), headers=spoof)) as dl_csv:
             # decode binary format
             dl_csv = dl_csv.read().decode('utf-8').split('\n')
             for row in csv.reader(dl_csv):
@@ -73,11 +84,23 @@ def getStats(time=datetime.now()):
         for i,v in f.items():
             v.update(stats[g][i])
 
-    return files
+    for g in game:
+        # get mod stats
+        url = mod_stats_json.format(gameid[g],alov[g])
+        req = r.Request(url, headers=spoof)
+        dl_json = r.urlopen(req)
+        mod_stats[g] = json.loads(dl_json.read())
+
+    return mod, mod_stats, files
 
 if __name__ == '__main__':
-    files = getStats()
-    for n,g in files.items():
+    endorsements, mod_stats, files_stats = getStats()
+
+    print(endorsements)
+
+    print(mod_stats)
+
+    for n,g in files_stats.items():
         print(n)
         for f,v in g.items():
             print('\t', v)
