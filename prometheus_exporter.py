@@ -50,7 +50,7 @@ class ALOVCollector(object):
             for k in ['mod_page_views', 'mod_daily_counts']:
                 latest = sorted(g[k].keys())
                 # ignore today
-                while (ul - timedelta(days=1)) >= datetime.fromisoformat(latest[-1]).replace(tzinfo=timezone.utc):
+                while (lu - timedelta(days=1)) >= datetime.fromisoformat(latest[-1]).replace(tzinfo=timezone.utc):
                     # shave off last
                     latest = latest[:-1]
 
