@@ -28,11 +28,11 @@ apikey = "pasteyourNexusModsapikeyhere"
 
 # start another game section like this:
 [masseffect2]
-	# select multiple categories using a list:
+    # select multiple categories using a list:
     245 = ["main", "update"]
 
 [masseffect3]
-	# select all categories using "all":
+    # select all categories using "all":
     773 = "all"
 
 # additional options:
