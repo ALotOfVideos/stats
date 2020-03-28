@@ -1,0 +1,43 @@
+# replace this with your key from https://www.nexusmods.com/users/myaccount?tab=api
+apikey = "pasteyourNexusModsapikeyhere"
+
+# interval in seconds between polling
+# the Nexus Mods API limits your API requests to 100 per hour, the program will take care not to exceed this limit.
+# this may mean that the actual interval is much longer, depending on how many mods you configure to track:
+# per mod, 2 API requests are needed, so the minimum interval is 2*60*60/100=72 seconds. multiply by number of mods to get your actual minimum.
+# 300 = 5 minutes seem a reasonable default, be advised to use the same interval your scraper uses.
+# set this to 0 to always update as soon as possible.
+"min update interval" = 300
+
+# these are all file categories available on Nexus Mods. by default, all will be tracked. choose from these values below.
+# you may modify this default list, it will replace "default" and [] choices below.
+"default categories" = ["main", "update", "optional", "old_version", "miscellaneous"]
+
+# start a new game section with the game name in square brackets like this:
+# game name as in the Nexus Mods URL: https://www.nexusmods.com/masseffect
+[masseffect]
+    # add a list of the IDs of mods you want to track and the categories of files you want to track for each mod
+    # e.g. MEUITM's URL: https://www.nexusmods.com/masseffect/mods/1 has ID 1 at the end of it's URL
+    # and at the time of writing has 2 main files we could track
+    1 = "main"
+    # you can select a single file category by using a simple string (above), or list of one string (below)
+    69 = ["old_version"]
+    # you can select default categories by using an empty list [] or "default":
+    83 = []
+    144 = "default"
+
+# start another game section like this:
+[masseffect2]
+	# select multiple categories using a list:
+    245 = ["main", "update"]
+
+[masseffect3]
+	# select all categories using "all":
+    773 = "all"
+
+# additional options:
+# if for some reason necessary, you can uncomment and modify the following settings
+# "game id file" = "game-ids.json"
+# "mod stats timestamp file" = "last-mod-stats-update.json"
+# [prometheus]
+# port = 8000

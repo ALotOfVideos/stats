@@ -1,5 +1,5 @@
-api-key.txt
 .python-version
 __pycache__
+config.toml
 game-ids.json
-last_mod_stats_update.json
+last-mod-stats-update.json

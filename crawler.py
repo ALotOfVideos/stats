@@ -6,95 +6,105 @@ import os.path
 import csv
 from datetime import datetime
 
-api = 'https://api.nexusmods.com'
-dl_stats_csv = 'https://staticstats.nexusmods.com/live_download_counts/files/{:d}.csv?cachesteamp={:d}'
-mod_stats_json = 'https://staticstats.nexusmods.com/mod_monthly_stats/{:d}/{:d}.json'
+class StatsCrawler:
 
-endpoint = { 'files': '/v1/games/{:s}/mods/{:d}/files.json?category={:s}',
-             'details': '/v1/games/{:s}/mods/{:d}/files/{:d}.json',
-             'games': '/v1/games/{:s}.json',
-             'mod': '/v1/games/{:s}/mods/{:d}.json' }
-spoof = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36' }
+    def __init__(self, config):
+        self.config = config
+        self.api = 'https://api.nexusmods.com'
+        self.dl_stats_csv = 'https://staticstats.nexusmods.com/live_download_counts/files/{:d}.csv?cachesteamp={:d}'
+        self.mod_stats_json = 'https://staticstats.nexusmods.com/mod_monthly_stats/{:d}/{:d}.json'
 
-game = ['masseffect', 'masseffect2', 'masseffect3']
-alov = { 'masseffect': 144, 'masseffect2': 245, 'masseffect3': 773 }
-categories = ['main', 'update', 'optional', 'old_version', 'miscellaneous']
+        self.endpoint = { 'files': '/v1/games/{:s}/mods/{:d}/files.json?category={:s}',
+                          'details': '/v1/games/{:s}/mods/{:d}/files/{:d}.json',
+                          'games': '/v1/games/{:s}.json',
+                          'mod': '/v1/games/{:s}/mods/{:d}.json' }
+        self.spoof = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36' }
 
-api_key_file ='api-key.txt'
-if not os.path.isfile(api_key_file):
-    print(f'Missing {api_key_file}! Read instructions in README.md')
-with open(api_key_file, 'r') as f:
-    headers = { 'accept': 'application/json',
-                'apikey': f.read() }
+        self.games = self.config.games
+        self.mods = self.config.mods
+        self.headers = { 'accept': 'application/json', 'apikey': self.config.apikey }
+        self.game_id_file = self.config.game_id_file
+        self.gameid = self.getGameIDs()
 
-game_id_file = 'game-ids.json'
-if os.path.isfile(game_id_file):
-    with open(game_id_file, 'r') as f:
-        gameid = json.load(f)
-else:
-    gameid = dict()
-    for g in game:
-        # get game id for later
-        url = api + endpoint['games'].format(g)
-        req = r.Request(url, headers=headers)
-        response = r.urlopen(req)
-        gameid[g] = json.loads(response.read()).get('id')
+    def getGameIDs(self):
+        if os.path.isfile(self.game_id_file):
+            with open(self.game_id_file, 'r') as f:
+                gameid = json.load(f)
+        else:
+            gameid = dict()
+            for g in self.games:
+                # get game id for later
+                url = self.api + self.endpoint['games'].format(g)
+                req = r.Request(url, headers=self.headers)
+                response = r.urlopen(req)
+                gameid[g] = json.loads(response.read()).get('id')
 
-    with open(game_id_file, 'w') as f:
-        json.dump(gameid, f)
+            with open(self.game_id_file, 'w') as f:
+                json.dump(gameid, f)
 
-def getStats(time=datetime.now()):
-    mod = dict()
-    files = { g: dict() for g in game }
-    stats = { g: dict() for g in game }
-    mod_stats = dict()
+        return gameid
 
-    for g in game:
-        # get mod stats
-        url = api + endpoint['mod'].format(g, alov[g])
-        req = r.Request(url, headers=headers)
-        response = r.urlopen(req)
-        mod[g] = json.loads(response.read())
+    def getStats(self, time=datetime.now()):
+        endorsements = { g: dict() for g in self.games }
+        files = { g: { m: dict() for m in self.mods[g] } for g in self.games }
+        stats = { g: dict() for g in self.games }
+        mod_stats = { g: dict() for g in self.games }
 
-    for g in game:
-        # get list of files
-        url = api + endpoint['files'].format(g, alov[g], ','.join(categories))
-        req = r.Request(url, headers=headers)
-        response = r.urlopen(req)
-        l = json.loads(response.read()).get('files', [])
-        for f in l:
-            files[g][f.get('file_id', 0)] = f
+        for g in self.games:
+            for m in self.mods[g].keys():
+                # get mod stats
+                url = self.api + self.endpoint['mod'].format(g, m)
+                req = r.Request(url, headers=self.headers)
+                response = r.urlopen(req)
+                endorsements[g][m] = json.loads(response.read())
 
-    # match nexus' cache busting timestamp format
-    timestamp = int(time.timestamp() * 1000000 / 300000000)
+        for g in self.games:
+            for m,categories in self.mods[g].items():
+                # get list of files
+                url = self.api + self.endpoint['files'].format(g, m, ','.join(categories))
+                req = r.Request(url, headers=self.headers)
+                response = r.urlopen(req)
+                l = json.loads(response.read()).get('files', [])
+                for f in l:
+                    files[g][m][f.get('file_id', 0)] = f
 
-    for g in game:
-        # get download stats
-        with r.urlopen(r.Request(dl_stats_csv.format(gameid[g],timestamp), headers=spoof)) as dl_csv:
-            # decode binary format
-            dl_csv = dl_csv.read().decode('utf-8').split('\n')
-            for row in csv.reader(dl_csv):
-                # remove lines that don't match the expected id,dls,unique format
-                if len(row) < 3:
-                    continue
-                stats[g][int(row[0])] = { 'downloads': int(row[1]), 'unique_downloads': int(row[2])}
+        # match nexus' cache busting timestamp format
+        timestamp = int(time.timestamp() * 1000000 / 300000000)
 
-    # fill info in with file details
-    for g,f in files.items():
-        for i,v in f.items():
-            v.update(stats[g][i])
+        for g in self.games:
+            # get download stats
+            with r.urlopen(r.Request(self.dl_stats_csv.format(self.gameid[g],timestamp), headers=self.spoof)) as dl_csv:
+                # decode binary format
+                dl_csv = dl_csv.read().decode('utf-8').split('\n')
+                for row in csv.reader(dl_csv):
+                    # remove lines that don't match the expected id,dls,unique format
+                    if len(row) < 3:
+                        continue
+                    stats[g][int(row[0])] = { 'downloads': int(row[1]), 'unique_downloads': int(row[2])}
 
-    for g in game:
-        # get mod stats
-        url = mod_stats_json.format(gameid[g],alov[g])
-        req = r.Request(url, headers=spoof)
-        dl_json = r.urlopen(req)
-        mod_stats[g] = json.loads(dl_json.read())
+        # fill info in with file details
+        for g,mod in files.items():
+            for m,f in mod.items():
+                for i,v in f.items():
+                    v.update(stats[g][i])
 
-    return mod, mod_stats, files
+        for g in self.games:
+            for m in self.mods[g]:
+                # get mod stats
+                url = self.mod_stats_json.format(self.gameid[g],m)
+                req = r.Request(url, headers=self.spoof)
+                dl_json = r.urlopen(req)
+                mod_stats[g][m] = json.loads(dl_json.read())
+
+        return endorsements, mod_stats, files
 
 if __name__ == '__main__':
-    endorsements, mod_stats, files_stats = getStats()
+    from config import StatsConfig
+
+    config = StatsConfig()
+    crawler = StatsCrawler(config)
+
+    endorsements, mod_stats, files_stats = crawler.getStats()
 
     print(endorsements)
 
