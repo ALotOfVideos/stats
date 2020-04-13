@@ -34,7 +34,7 @@ To export metrics to [TimescaleDB](https://www.timescale.com/):
 1. Run `./timescale_exporter.py` as a daemon.
 
 To display metrics with [Grafana](https://grafana.com/):
-1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Find more info and examples in the [documentation](documentaion) folder.
+1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Find more info and examples in the [documentation](documentation) folder.
 1. The TimescaleDB example dashboard requires some community plugins: `grafana-cli plugins install aidanmountford-html-panel`
  
 ## Docker Usage
