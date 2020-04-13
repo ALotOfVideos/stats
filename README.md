@@ -46,4 +46,4 @@ Feel free to PR!
 ## Screenshots
 
 ![Grafana dashboard showing stats of a single mod](documentation/stats_single_mod.jpg "Stats of a single mod")
-![Grafana dashboard showing stats grand total](documentation/stats_grad_total.jpg "Stats grand total")
+![Grafana dashboard showing stats grand total](documentation/stats_grand_total.jpg "Stats grand total")
