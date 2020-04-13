@@ -14,7 +14,6 @@ class StatsConfig(object):
     apikey = None
     mods = dict() # { 'masseffect': {144: _categories_default}, 'masseffect2': {245: _categories_default}, 'masseffect3': {773: _categories_default} }
     _categories_all = ['main', 'update', 'optional', 'old_version', 'miscellaneous']
-    _categories_default = _categories_all
     game_id_file = 'game-ids.json'
     _minInterval = 300
     _config_file_default = 'config.toml'

@@ -2,6 +2,13 @@
 
 Collects and tracks various stats of your Nexus Mods mods.
 
+## Contents
+1. [Installation](#installation)
+1. [Usage](#usage)
+1. [Docker Usage](#docker-usage)
+1. [Constributing](#contributing)
+1. [Screenshots](#screenshots)
+
 ## Installation
 
 1. `git clone` this repository to your server.
@@ -27,9 +34,16 @@ To export metrics to [TimescaleDB](https://www.timescale.com/):
 1. Run `./timescale_exporter.py` as a daemon.
 
 To display metrics with [Grafana](https://grafana.com/):
-1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Prometheus example: `masseffect3_alotofvideosalovforme3_uniquedownloads{name!~".*Unpacker.*",category="MAIN"}`
+1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Find more info and examples in the [documentation](documentaion) folder.
 1. The TimescaleDB example dashboard requires some community plugins: `grafana-cli plugins install aidanmountford-html-panel`
  
+## Docker Usage
+
 ## Contributing
 
 Feel free to PR!
+
+## Screenshots
+
+![Grafana dashboard showing stats of a single mod](documentation/stats_single_mod.jpg "Stats of a single mod")
+![Grafana dashboard showing stats grand total](documentation/stats_grad_total.jpg "Stats grand total")
