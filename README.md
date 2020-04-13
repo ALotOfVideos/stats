@@ -20,7 +20,7 @@ To export metrics to [Prometheus](https://prometheus.io):
 1. Run `./prometheus_exporter.py` as a daemon.
 1. Set Prometheus to scrape from the running script (default `localhost:8000`) with scrape interval matching the script's `"min update interval"`.
 
-To export metrics to [TimescaleDB](https://www.timescale.com/)
+To export metrics to [TimescaleDB](https://www.timescale.com/):
 1. [Install PostgreSQL + TimescaleDB](https://docs.timescale.com/latest/getting-started/installation)
 1. Depending on your setup, enable network-based access: `listen_addresses` in `postgresql.conf`, authentication in `pg_hba.conf`.
 1. Set up a user, password, and database ([instructions](https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e)). Add this configuration to your `config.toml`.
@@ -29,3 +29,7 @@ To export metrics to [TimescaleDB](https://www.timescale.com/)
 To display metrics with [Grafana](https://grafana.com/):
 1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Prometheus example: `masseffect3_alotofvideosalovforme3_uniquedownloads{name!~".*Unpacker.*",category="MAIN"}`
 1. The TimescaleDB example dashboard requires some community plugins: `grafana-cli plugins install aidanmountford-html-panel`
+ 
+## Contributing
+
+Feel free to PR!
