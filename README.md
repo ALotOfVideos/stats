@@ -29,3 +29,22 @@ To export metrics to [TimescaleDB](https://www.timescale.com/)
 To display metrics with [Grafana](https://grafana.com/):
 1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Prometheus example: `masseffect3_alotofvideosalovforme3_uniquedownloads{name!~".*Unpacker.*",category="MAIN"}`
 1. The TimescaleDB example dashboard requires some community plugins: `grafana-cli plugins install aidanmountford-html-panel`
+
+### with Docker
+
+This repository includes a `Dockerfile`, enabling you to easily build a docker container for this app, automatically installing all required dependincies while leaving your system unchanged.
+1. `git clone` this repository to your server
+1. Build the container: `docker build -t alov/nexus-mods-stats .`
+1. Run an exporter:
+```
+docker run -it -v /absolute/path/to/your/config.toml:/nm-stats/config.toml alov/nexus-mods-stats python ./timescaledb_exporter.py
+```
+
+Also included is a `docker-compose.yml`, which allows you to automatically and easily deploy the whole stack of exporter, database and Grafana using docker.
+1. `git clone` this repository to your server
+1. Edit `docker-compose.yml` to your needs (uncomment Prometheus or TimescaleDB)
+1. If using TimescaleDB:
+    1. Create your services `docker-compose up --no-start`, but start only the PostgreSQL server `docker start stats_timescaledb`.
+    1. Connect to your PostgreSQL server using `docker run -it --rm --network stats_default timescale/timescaledb:latest-pg9.6 psql -h stats_timescaledb -U postgres` and create your database (`CREATE DATABASE 'nm-stats';`).
+1. Deplay your stack: `docker-compose up -d` and access grafana at `http://localhost:3000`
+1. If you have a domain and want your Grafana public facing with https, add a reverse proxy (e.g. nginx with letsencrypt)
