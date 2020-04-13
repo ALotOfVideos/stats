@@ -19,6 +19,7 @@ class StatsConfig(object):
     _config_file_default = 'config.toml'
     last_updated_file = 'last-mod-stats-update.json'
     prom = { 'port': 8000 }
+    timescaleDB = { 'dbname': 'nm-stats', 'user': 'nm-stats' }
 
     def __init__(self, config_file=_config_file_default):
         self._config_file = config_file
@@ -31,6 +32,7 @@ class StatsConfig(object):
             self.last_updated_file = _getDelete(c, 'mod stats timestamp file', self.last_updated_file)
             self.setMinInterval(_getDelete(c, 'min update interval', self._minInterval))
             self.prom = _getDelete(c, 'prometheus', self.prom)
+            self.timescaleDB = _getDelete(c, 'timescaleDB', self.timescaleDB)
             self.mods = c
 
         else:
@@ -95,6 +97,12 @@ class StatsConfig(object):
     def interval(self):
         return self._interval
 
+    def getTimescaleDBString(self):
+        str = ''
+        for k,v in self.timescaleDB.items():
+            str += f"{k}={v} "
+        return str[:-1]
+
     def setMinInterval(self,i):
         # 100 API requests per hour is the maximum allowed frequency
         # 60 min * 60 sec / 100 reqs = min 36 sec between reqs
@@ -114,6 +122,7 @@ class StatsConfig(object):
             c['default categories'] = self._categories_default
             c['min update interval'] = self._minInterval
             c['prometheus'] = self.prom
+            c['timescaleDB'] = self.timescaleDB
             for g,m in self.mods.items():
                 temp = dict()
                 for modID,cats in m.items():

@@ -100,17 +100,22 @@ class StatsCrawler:
 
 if __name__ == '__main__':
     from config import StatsConfig
+    from pprint import pprint
 
     config = StatsConfig()
     crawler = StatsCrawler(config)
 
     endorsements, mod_stats, files_stats = crawler.getStats()
 
-    print(endorsements)
+    pprint(endorsements)
 
-    print(mod_stats)
+    print()
+
+    pprint(mod_stats)
+
+    print()
 
     for n,g in files_stats.items():
-        print(n)
+        print('\n', n)
         for f,v in g.items():
-            print('\t', v)
+            pprint(v)

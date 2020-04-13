@@ -35,9 +35,21 @@ apikey = "pasteyourNexusModsapikeyhere"
     # select all categories using "all":
     773 = "all"
 
+# prometheus options:
+# set the port on which your stats will be published. point your prometheus scraper to this port.
+# [prometheus]
+# port = 8000
+
+# timescaleDB options:
+# if you want to use timescaleDB (recommended), set any values deviating from the psycopg2 defaults here, e.g.:
+# [timescaleDB]
+# host = "localhost"
+# port = 5432
+# dbname = "nm-stats"
+# user = "nm-stats"
+# password = "mypassword"
+
 # additional options:
 # if for some reason necessary, you can uncomment and modify the following settings
 # "game id file" = "game-ids.json"
 # "mod stats timestamp file" = "last-mod-stats-update.json"
-# [prometheus]
-# port = 8000
