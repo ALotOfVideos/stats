@@ -46,5 +46,5 @@ Also included is a `docker-compose.yml`, which allows you to automatically and e
 1. If using TimescaleDB:
     1. Create your services `docker-compose up --no-start`, but start only the PostgreSQL server `docker start stats_timescaledb`.
     1. Connect to your PostgreSQL server using `docker run -it --rm --network stats_default timescale/timescaledb:latest-pg9.6 psql -h stats_timescaledb -U postgres` and create your database (`CREATE DATABASE 'nm-stats';`).
-1. Deplay your stack: `docker-compose up -d` and access grafana at `http://localhost:3000`
-1. If you have a domain and want your Grafana public facing with https, add a reverse proxy (e.g. nginx with letsencrypt)
+1. Deploy your stack: `docker-compose up -d` and access grafana at `http://localhost:3000`
+1. If you have a domain and want your Grafana public facing with https, add a reverse proxy (e.g. nginx with letsencrypt). This can be done with docker, too: https://github.com/wmnnd/nginx-certbot, https://github.com/linuxserver/docker-letsencrypt
