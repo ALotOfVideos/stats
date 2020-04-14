@@ -44,11 +44,9 @@ class StatsCollector(object):
                 lu = datetime.fromisoformat(lu)
 
                 # skip if timestamp exists but isn't newer
-                if self.last_updated[g].get(m) is not None and lu <= self.last_updated[g][m]:
+                if self.last_updated.get(g).get(m) is not None and lu <= self.last_updated[g][m]:
                     continue
 
-                self.updated_flag[g][mod] = True
-                self.last_updated[g][m] = lu
 
                 for k in ['mod_page_views', 'mod_daily_counts']:
                     latest = sorted(stats[k].keys())
@@ -63,6 +61,9 @@ class StatsCollector(object):
                         latest = [latest[-1]]
 
                     stats[k] = { l: stats[k][l] for l in latest}
+
+                self.updated_flag[g][mod] = True
+                self.last_updated[g][m] = lu
 
     def update(self):
         now = datetime.now(tz=timezone.utc)
