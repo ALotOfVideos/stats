@@ -2,6 +2,13 @@
 
 Collects and tracks various stats of your Nexus Mods mods.
 
+## Contents
+1. [Installation](#installation)
+1. [Usage](#usage)
+1. [Installation and usage with Docker](#installation-and-usage-with-docker)
+1. [Constributing](#contributing)
+1. [Screenshots](#screenshots)
+
 ## Installation
 
 1. `git clone` this repository to your server.
@@ -20,17 +27,17 @@ To export metrics to [Prometheus](https://prometheus.io):
 1. Run `./prometheus_exporter.py` as a daemon.
 1. Set Prometheus to scrape from the running script (default `localhost:8000`) with scrape interval matching the script's `"min update interval"`.
 
-To export metrics to [TimescaleDB](https://www.timescale.com/)
+To export metrics to [TimescaleDB](https://www.timescale.com/):
 1. [Install PostgreSQL + TimescaleDB](https://docs.timescale.com/latest/getting-started/installation)
 1. Depending on your setup, enable network-based access: `listen_addresses` in `postgresql.conf`, authentication in `pg_hba.conf`.
 1. Set up a user, password, and database ([instructions](https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e)). Add this configuration to your `config.toml`.
 1. Run `./timescale_exporter.py` as a daemon.
 
 To display metrics with [Grafana](https://grafana.com/):
-1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Prometheus example: `masseffect3_alotofvideosalovforme3_uniquedownloads{name!~".*Unpacker.*",category="MAIN"}`
+1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Find more info and examples in the [documentation](documentation) folder.
 1. The TimescaleDB example dashboard requires some community plugins: `grafana-cli plugins install aidanmountford-html-panel`
 
-### with Docker
+## Installation and usage with Docker
 
 This repository includes a `Dockerfile`, enabling you to easily build a docker container for this app, automatically installing all required dependincies while leaving your system unchanged.
 1. `git clone` this repository to your server
@@ -50,3 +57,12 @@ Also included is a `docker-compose.yml`, which allows you to automatically and e
     1. Connect to your PostgreSQL server using `docker run -it --rm --network stats_default timescale/timescaledb:latest-pg9.6 psql -h stats_timescaledb -U postgres` and create your database (`CREATE DATABASE "nm-stats";`).
 1. Deploy your stack: `docker-compose up -d` and access grafana at `http://localhost:3000`
 1. If you have a domain and want your Grafana public facing with https, add a reverse proxy (e.g. nginx with letsencrypt). This can be done with docker, too: e.g. [nginx-certbot](https://github.com/wmnnd/nginx-certbot), [docker-letsencrypt](https://github.com/linuxserver/docker-letsencrypt). 
+
+## Contributing
+
+Feel free to PR!
+
+## Screenshots
+
+![Grafana dashboard showing stats of a single mod](documentation/stats_single_mod.jpg "Stats of a single mod")
+![Grafana dashboard showing stats grand total](documentation/stats_grand_total.jpg "Stats grand total")

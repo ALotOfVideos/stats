@@ -1,0 +1,2807 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_TIMESCALEDB",
+      "label": "TimescaleDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "aidanmountford-html-panel",
+      "name": "HTML",
+      "version": "0.0.1"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.7.2"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "heatmap",
+      "name": "Heatmap",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": null,
+  "iteration": 1586869260802,
+  "links": [
+    {
+      "icon": "external link",
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Nexus Mods Stats on GitHub",
+      "type": "link",
+      "url": "https://github.com/ALotOfVideos/stats"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 19,
+      "panels": [],
+      "repeat": "modid",
+      "title": "",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "cacheTimeout": null,
+      "css_data": "",
+      "datasource": "${DS_TIMESCALEDB}",
+      "doInit": {},
+      "format": "short",
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "handleMetric": {},
+      "html_data": "",
+      "id": 228,
+      "interval": null,
+      "js_code": "var url = ctrl.data[0].rows[0].picture_url;\nhtmlnode.innerHTML = '<img style=\"height: 75px;\" src=\"' + url + '\"/>';",
+      "js_init_code": "",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  picture_url\nFROM games AS g\nINNER JOIN mods AS m\n  ON (g.gameid = m.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "",
+      "transparent": true,
+      "type": "aidanmountford-html-panel"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": true,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "${DS_TIMESCALEDB}",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 6,
+        "y": 1
+      },
+      "id": 86,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "game",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  mod\nFROM games AS g\nINNER JOIN mods AS m\n  ON (g.gameid = m.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "gameid"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "gameid"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "games",
+          "timeColumn": "gameid",
+          "timeColumnType": "int4",
+          "where": []
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "",
+      "transparent": true,
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "cacheTimeout": null,
+      "css_data": "",
+      "datasource": "${DS_TIMESCALEDB}",
+      "doInit": {},
+      "format": "short",
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "handleMetric": {},
+      "html_data": "",
+      "id": 177,
+      "interval": null,
+      "js_code": "",
+      "js_init_code": "var game = ctrl.data[0].rows[0].game;\nvar modid = ctrl.data[0].rows[0].modid;\nconsole.log(game);\nconsole.log(modid);\nhtmlnode.innerHTML = '<link rel=\"preload\" href=\"public/fonts/roboto/RxZJdnzeo3R5zSexge8UUVtXRa8TVwTICgirnJhmVJw.woff2\" as=\"font\" crossorigin=\"\">' +\n    '<link rel=\"stylesheet\" href=\"public/build/grafana.dark.898fe9e20a782b4232fe.css\">' + \n    '<p style=\"margin-top: 20px; text-align: right;\">' +\n        '<a style=\"color: white; text-decoration: none;\" href=\"https://www.nexusmods.com/' + game + '/mods/' + modid + '\" target=\"_blank\">' +\n            '<i style=\"font-size: 20px;\" class=\"fa fa-fw fa-external-link\"></i> ' +\n            '<span style=\"font-size: 30px;\">Nexus Mods<span>' +\n        '</a>' +\n    '</p>';",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  game,\n  m.modid\nFROM games AS g\nINNER JOIN mods AS m\n  ON (g.gameid = m.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "",
+      "transparent": true,
+      "type": "aidanmountford-html-panel"
+    },
+    {
+      "cacheTimeout": null,
+      "columns": [
+        {
+          "text": "Max",
+          "value": "max"
+        }
+      ],
+      "datasource": "${DS_TIMESCALEDB}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 0,
+        "y": 4
+      },
+      "id": 21,
+      "interval": "1m",
+      "links": [],
+      "pageSize": null,
+      "pluginVersion": "6.7.1",
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Version",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": null,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "modversion",
+          "thresholds": [],
+          "type": "string",
+          "unit": "none"
+        },
+        {
+          "alias": "File",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "filename",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "File Size",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "filesizekb",
+          "thresholds": [],
+          "type": "number",
+          "unit": "kbytes"
+        },
+        {
+          "alias": "Unique",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": null,
+          "mappingType": 1,
+          "pattern": "uniquedls",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "Downloads",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "dls",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "alov_masseffect_uniquedownloads",
+          "format": "table",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{version}} {{name}}",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  modversion,\n  filename,\n  MAX(filesizekb) AS filesizekb,\n  MAX(uniquedls) AS uniquedls,\n  MAX(dls) AS dls\nFROM nexus_mod_files_stats AS s\nINNER JOIN nexus_mod_files AS f\n  ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\nINNER JOIN mods AS m ON (s.gameid = m.gameid AND s.modid = m.modid)\nINNER JOIN games AS g ON (s.gameid = g.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) = $modid\nGROUP BY modversion, s.fileid, filename, filesizekb\nORDER BY modversion DESC, filesizekb DESC;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Unique/Downloads by File",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 6,
+        "y": 4
+      },
+      "hiddenSeries": false,
+      "id": 46,
+      "interval": "1m",
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "maxPerRow": null,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "h",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(\"time\",$__interval),\n  CONCAT(modversion, ' ', filename) AS metric,\n  uniquedls - lag(uniquedls) OVER (PARTITION BY s.fileid ORDER BY time) AS delta\nFROM nexus_mod_files_stats AS s\nINNER JOIN nexus_mod_files AS f\n  ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\nINNER JOIN mods AS m\n  ON (s.gameid = m.gameid AND s.modid = m.modid)\nINNER JOIN games AS g\n  ON (s.gameid = g.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) = $modid AND\n  $__timeFilter(\"time\")\nGROUP BY 1,2,uniquedls,s.gameid,s.modid,s.fileid,modversion,s.time\nORDER BY modversion DESC, category ASC, time ASC",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Unique Download Activity",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 18,
+        "y": 4
+      },
+      "hiddenSeries": false,
+      "id": 3,
+      "interval": "1m",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "fileid::text",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  CONCAT(modversion, ' ', filename) AS metric,\n  avg(dls) AS \"dls\"\nFROM nexus_mod_files_stats AS s\nINNER JOIN nexus_mod_files AS f\n  ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\nINNER JOIN mods AS m\n  ON (s.gameid = m.gameid AND s.modid = m.modid)\nINNER JOIN games AS g\n  ON (s.gameid = g.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) = $modid AND\n  $__timeFilter(\"time\")\nGROUP BY 1,2,modversion,category\nORDER BY modversion DESC, category ASC, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "dls"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "dls"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "nexus_mod_files_stats",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "int4",
+              "name": "",
+              "params": [
+                "modid",
+                "=",
+                "144"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Downloads (Total)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "columns": [
+        {
+          "text": "Current",
+          "value": "current"
+        }
+      ],
+      "datasource": "${DS_TIMESCALEDB}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 13
+      },
+      "id": 30,
+      "interval": "1m",
+      "links": [],
+      "pageSize": null,
+      "pluginVersion": "6.7.1",
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Version",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": null,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "modversion",
+          "thresholds": [],
+          "type": "string",
+          "unit": "none"
+        },
+        {
+          "alias": "Unique DLs",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "uniquedls",
+          "sanitize": false,
+          "thresholds": [],
+          "type": "number",
+          "unit": "none",
+          "valueMaps": []
+        },
+        {
+          "alias": "Downloads",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "dls",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "sum by (version)(alov_masseffect_uniquedownloads)",
+          "format": "table",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{version}}",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  modversion,\r\n  MAX(uniquedls) AS uniquedls,\r\n  MAX(dls) AS dls\r\nFROM (\r\n  SELECT SUM(uniquedls) AS uniquedls, SUM(dls) AS dls, s.gameid, s.modid, modversion\r\n  FROM nexus_mod_files_stats AS s\r\n  INNER JOIN nexus_mod_files AS f\r\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n  GROUP BY s.gameid, s.modid, s.time, modversion\r\n  ) AS s\r\nINNER JOIN mods AS m\r\n  ON (s.gameid = m.gameid AND s.modid = m.modid)\r\nINNER JOIN games AS g\r\n  ON (s.gameid = g.gameid)\r\nWHERE\r\n  CONCAT(m.gameid,' ',m.modid) = $modid\r\nGROUP BY modversion\r\nORDER BY modversion DESC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Unique/Downloads by Version",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 6,
+        "y": 13
+      },
+      "hiddenSeries": false,
+      "id": 24,
+      "interval": "1m",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_uniquedownloads{name!~\".*Unpacker.*\",category=\"MAIN\"}",
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{version}} {{name}}",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  CONCAT(modversion, ' ', filename) AS metric,\n  avg(uniquedls) AS \"uniquedls\"\nFROM nexus_mod_files_stats AS s\nINNER JOIN nexus_mod_files AS f\n  ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\nINNER JOIN mods AS m\n  ON (s.gameid = m.gameid AND s.modid = m.modid)\nINNER JOIN games AS g\n  ON (s.gameid = g.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) = $modid AND\n  $__timeFilter(\"time\") AND\n  category = 'MAIN'\nGROUP BY 1,2,modversion,category\nORDER BY modversion DESC, category ASC, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Main Files Unique Downloads (Total)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 12,
+        "y": 13
+      },
+      "hiddenSeries": false,
+      "id": 26,
+      "interval": "1m",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_uniquedownloads{name!~\".*Unpacker.*\",category!=\"MAIN\"}",
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{version}} {{name}}",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  CONCAT(modversion, ' ', filename) AS metric,\n  avg(uniquedls) AS \"uniquedls\"\nFROM nexus_mod_files_stats AS s\nINNER JOIN nexus_mod_files AS f\n  ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\nINNER JOIN mods AS m\n  ON (s.gameid = m.gameid AND s.modid = m.modid)\nINNER JOIN games AS g\n  ON (s.gameid = g.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) = $modid AND\n  $__timeFilter(\"time\") AND\n  category != 'MAIN'\nGROUP BY 1,2,modversion,category\nORDER BY modversion DESC, category ASC, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Other Files Unique Downloads (Total)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 18,
+        "y": 13
+      },
+      "hiddenSeries": false,
+      "id": 27,
+      "interval": "1m",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_uniquedownloads{name!~\".*Unpacker.*\"}*alov_masseffect_sizes{name!~\".*Unpacker.*\"}",
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{version}} {{name}}",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  CONCAT(modversion, ' ', filename) AS metric,\n  avg(uniquedls) * filesizekb AS size\nFROM nexus_mod_files_stats AS s\nINNER JOIN nexus_mod_files AS f\n  ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\nINNER JOIN mods AS m\n  ON (s.gameid = m.gameid AND s.modid = m.modid)\nINNER JOIN games AS g\n  ON (s.gameid = g.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) = $modid AND\n  $__timeFilter(\"time\")\nGROUP BY 1,2,modversion,category,filesizekb\nORDER BY size ASC, modversion DESC, category ASC, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Size of Unique Downloads (Nexus Mods Total)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "kbytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "columns": [
+        {
+          "text": "Current",
+          "value": "current"
+        }
+      ],
+      "datasource": "${DS_TIMESCALEDB}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 18
+      },
+      "id": 43,
+      "interval": "1m",
+      "links": [],
+      "pageSize": null,
+      "pluginVersion": "6.7.1",
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Total DLs",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": null,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "totaldls",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "Tracked Unique DLs",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "uniquedls",
+          "sanitize": false,
+          "thresholds": [],
+          "type": "number",
+          "unit": "none",
+          "valueMaps": []
+        },
+        {
+          "alias": "Tracked Downloads",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "dls",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "sum by (version)(alov_masseffect_uniquedownloads)",
+          "format": "table",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{version}}",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  MAX(totaldls) AS totaldls,\n  MAX(uniquedls) AS uniquedls,\n  MAX(dls) AS dls\nFROM (\n  SELECT SUM(uniquedls) AS uniquedls, SUM(dls) AS dls, s.gameid, s.modid\n  FROM nexus_mod_files_stats AS s\n  INNER JOIN nexus_mod_files AS f\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\n  GROUP BY s.time, s.gameid, s.modid\n  ) AS s\nINNER JOIN nexus_mod_stats_total AS t\n  ON (s.gameid = t.gameid AND s.modid = t.modid)\nINNER JOIN mods AS m\n  ON (s.gameid = m.gameid AND s.modid = m.modid)\nINNER JOIN games AS g\n  ON (s.gameid = g.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) = $modid\nGROUP BY s.gameid, s.modid",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Unique/Downloads (Total)",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 66
+      },
+      "id": 36,
+      "panels": [],
+      "title": "Grand Total",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "cards": {
+        "cardPadding": null,
+        "cardRound": null
+      },
+      "color": {
+        "cardColor": "#FADE2A",
+        "colorScale": "linear",
+        "colorScheme": "interpolateTurbo",
+        "exponent": 0.5,
+        "mode": "spectrum"
+      },
+      "dataFormat": "tsbuckets",
+      "datasource": "${DS_TIMESCALEDB}",
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 67
+      },
+      "heatmap": {},
+      "hideZeroBuckets": true,
+      "highlightCards": true,
+      "id": 107,
+      "interval": "1m",
+      "legend": {
+        "show": false
+      },
+      "links": [],
+      "pluginVersion": "6.6.2",
+      "reverseYBuckets": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(\"time\",$__interval),\n  mod as metric,\n  SUM(delta)\nFROM (\n  SELECT\n    time,\n    CONCAT(modversion, ' ', filename) AS modvf,\n    uniquedls - lag(uniquedls) OVER (PARTITION BY s.fileid ORDER BY time) AS delta,\n    mod, game\n  FROM nexus_mod_files_stats AS s\n  INNER JOIN nexus_mod_files AS f\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\n  INNER JOIN mods as m\n    ON (s.gameid = m.gameid AND s.modid = m.modid)\n  INNER JOIN games as g\n    ON (s.gameid = g.gameid)\n  WHERE\n    $__timeFilter(\"time\") AND\n    CONCAT(m.gameid,' ',m.modid) IN ($modid)\n  GROUP BY 1,2,game,time,s.fileid,uniquedls,mod\n  ) AS d\nGROUP BY mod, time, game\nORDER BY game DESC, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Unique Download Activity",
+      "tooltip": {
+        "show": true,
+        "showHistogram": false
+      },
+      "tooltipDecimals": 0,
+      "type": "heatmap",
+      "xAxis": {
+        "show": true
+      },
+      "xBucketNumber": null,
+      "xBucketSize": null,
+      "yAxis": {
+        "decimals": null,
+        "format": "none",
+        "logBase": 1,
+        "max": null,
+        "min": null,
+        "show": true,
+        "splitFactor": null
+      },
+      "yBucketBound": "auto",
+      "yBucketNumber": null,
+      "yBucketSize": null
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 67
+      },
+      "hiddenSeries": false,
+      "id": 37,
+      "interval": "1m",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.7.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(\"time\",$__interval),\n  mod as metric,\n  SUM(delta)\nFROM (\n  SELECT\n    time,\n    CONCAT(modversion, ' ', filename) AS modvf,\n    uniquedls - lag(uniquedls) OVER (PARTITION BY s.fileid ORDER BY time) AS delta,\n    mod, game\n  FROM nexus_mod_files_stats AS s\n  INNER JOIN nexus_mod_files AS f\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\n  INNER JOIN mods as m\n    ON (s.gameid = m.gameid AND s.modid = m.modid)\n  INNER JOIN games as g\n    ON (s.gameid = g.gameid)\n  WHERE\n    $__timeFilter(\"time\") AND\n    CONCAT(m.gameid,' ',m.modid) IN ($modid)\n  GROUP BY 1,2,game,time,s.fileid,uniquedls,mod\n  ) AS d\nGROUP BY mod, time, game\nORDER BY game ASC, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [
+        {
+          "colorMode": "yellow",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "20:00",
+          "fromDayOfWeek": 5,
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "00:00",
+          "toDayOfWeek": 1
+        }
+      ],
+      "timeShift": null,
+      "title": "Unique Download Activity",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "columns": [],
+      "datasource": "${DS_TIMESCALEDB}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 71
+      },
+      "id": 39,
+      "interval": "1m",
+      "pageSize": null,
+      "pluginVersion": "6.7.2",
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Mod",
+          "align": "left",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "mod",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Download Size (Tracked)",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "size",
+          "thresholds": [],
+          "type": "number",
+          "unit": "kbytes"
+        },
+        {
+          "alias": "Total DLs (Nexus)",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "totaldls",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "Unique DLs (Tracked)",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "uniquedls",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "Unique Size (Tracked)",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "usize",
+          "thresholds": [],
+          "type": "number",
+          "unit": "kbytes"
+        },
+        {
+          "alias": "Downloads (Tracked)",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "dls",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "Page Views",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "pageviews",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        },
+        {
+          "alias": "Endorsements",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "endorsements",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "sum(alov_masseffect_uniquedownloads)",
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "interval": "",
+          "legendFormat": "ALOV for ME1",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  mod,\r\n  MAX(totaldls) AS totaldls,\r\n  SUM(f.uniquedls) AS uniquedls,\r\n  SUM(f.usize) AS usize,\r\n  SUM(f.dls) AS dls,\r\n  SUM(f.size) AS size,\r\n  pageviews,\r\n  MAX(endorsements) AS endorsements\r\nFROM (\r\n  SELECT\r\n    game,\r\n    s.gameid,\r\n    s.modid,\r\n    MAX(s.uniquedls) AS uniquedls,\r\n    MAX(s.dls) AS dls,\r\n    MAX(s.uniquedls)::bigint * MAX(filesizekb) AS usize,\r\n    MAX(s.dls)::bigint * MAX(filesizekb) AS size,\r\n    s.fileid\r\n  FROM nexus_mod_files_stats AS s\r\n  INNER JOIN nexus_mod_files AS f\r\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n  INNER JOIN games AS g\r\n    ON (s.gameid = g.gameid)\r\n  WHERE\r\n    CONCAT(s.gameid,' ',s.modid) IN ($modid)\r\n  GROUP BY 1,2,3,s.fileid\r\n            ) AS f\r\nINNER JOIN (\r\n  SELECT\r\n    gameid, modid,\r\n    SUM(pageviews) AS pageviews\r\n  FROM nexus_mod_stats_daily\r\n  GROUP BY 1,2\r\n  ) AS p\r\n  ON (f.gameid = p.gameid AND f.modid = p.modid)\r\nINNER JOIN (\r\n  SELECT gameid,modid,\r\n    MAX(endorsements) AS endorsements\r\n  FROM endorsements\r\n  GROUP BY 1,2\r\n  ) AS e\r\n  ON (f.gameid = e.gameid and f.modid = e.modid)\r\nINNER JOIN mods AS m\r\n  ON (f.gameid = m.gameid and f.modid = m.modid)\r\nINNER JOIN (\r\n  SELECT gameid,modid,\r\n  MAX(totaldls) AS totaldls\r\n  FROM nexus_mod_stats_total\r\n  GROUP BY 1,2\r\n  ) AS t\r\n  ON (f.gameid = t.gameid AND f.modid = t.modid)\r\nWHERE\r\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\nGROUP BY f.modid,f.gameid,mod,game,pageviews\r\nORDER BY game",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "expr": "sum(alov_masseffect_uniquedownloads)",
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "interval": "",
+          "legendFormat": "ALOV for ME1",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  'Total' AS mod,\r\n  SUM(totaldls) AS totaldls,\r\n  SUM(uniquedls) AS uniquedls,\r\n  SUM(usize) AS usize,\r\n  SUM(dls) AS dls,\r\n  SUM(size) AS size,\r\n  SUM(pageviews) AS pageviews,\r\n  SUM(endorsements) AS endorsements\r\nFROM (\r\n  SELECT\r\n    mod,\r\n    MAX(totaldls) AS totaldls,\r\n    SUM(f.uniquedls) AS uniquedls,\r\n    SUM(f.usize) AS usize,\r\n    SUM(f.dls) AS dls,\r\n    SUM(f.size) AS size,\r\n    pageviews,\r\n    MAX(endorsements) AS endorsements\r\n  FROM (\r\n    SELECT\r\n      game,\r\n      s.gameid,\r\n      s.modid,\r\n      MAX(s.uniquedls) AS uniquedls,\r\n      MAX(s.dls) AS dls,\r\n      MAX(s.uniquedls)::bigint * MAX(filesizekb) AS usize,\r\n      MAX(s.dls)::bigint * MAX(filesizekb) AS size,\r\n      s.fileid\r\n    FROM nexus_mod_files_stats AS s\r\n    INNER JOIN nexus_mod_files AS f\r\n      ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n    INNER JOIN games AS g\r\n      ON (s.gameid = g.gameid)\r\n    WHERE\r\n      CONCAT(s.gameid,' ',s.modid) IN ($modid)\r\n    GROUP BY 1,2,3,s.fileid\r\n              ) AS f\r\n  INNER JOIN (\r\n    SELECT\r\n      gameid, modid,\r\n      SUM(pageviews) AS pageviews\r\n    FROM nexus_mod_stats_daily\r\n    GROUP BY 1,2\r\n    ) AS p\r\n    ON (f.gameid = p.gameid AND f.modid = p.modid)\r\n  INNER JOIN (\r\n    SELECT gameid,modid,\r\n      MAX(endorsements) AS endorsements\r\n    FROM endorsements\r\n    GROUP BY 1,2\r\n    ) AS e\r\n    ON (f.gameid = e.gameid and f.modid = e.modid)\r\n  INNER JOIN mods AS m\r\n    ON (f.gameid = m.gameid and f.modid = m.modid)\r\n  INNER JOIN (\r\n    SELECT gameid,modid,\r\n    MAX(totaldls) AS totaldls\r\n    FROM nexus_mod_stats_total\r\n    GROUP BY 1,2\r\n    ) AS t\r\n    ON (f.gameid = t.gameid AND f.modid = t.modid)\r\n  WHERE\r\n    CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\n  GROUP BY f.modid,f.gameid,mod,game,pageviews\r\n  ORDER BY game\r\n  ) AS t",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  mod,\r\n  MAX(totaldls) AS totaldls,\r\n  SUM(f.uniquedls) AS uniquedls,\r\n  SUM(f.usize) AS usize,\r\n  SUM(f.dls) AS dls,\r\n  SUM(f.size) AS size,\r\n  pageviews,\r\n  MAX(endorsements) AS endorsements\r\nFROM (\r\n  SELECT\r\n    game,\r\n    s.gameid,\r\n    s.modid,\r\n    MAX(s.uniquedls) AS uniquedls,\r\n    MAX(s.dls) AS dls,\r\n    MAX(s.uniquedls)::bigint * MAX(filesizekb) AS usize,\r\n    MAX(s.dls)::bigint * MAX(filesizekb) AS size,\r\n    s.fileid\r\n  FROM nexus_mod_files_stats AS s\r\n  INNER JOIN nexus_mod_files AS f\r\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n  INNER JOIN games AS g\r\n    ON (s.gameid = g.gameid)\r\n  WHERE\r\n    CONCAT(s.gameid,' ',s.modid) IN ($modid)\r\n  GROUP BY 1,2,3,s.fileid\r\n            ) AS f\r\nINNER JOIN (\r\n  SELECT\r\n    gameid, modid,\r\n    SUM(pageviews) AS pageviews\r\n  FROM nexus_mod_stats_daily\r\n  GROUP BY 1,2\r\n  ) AS p\r\n  ON (f.gameid = p.gameid AND f.modid = p.modid)\r\nINNER JOIN (\r\n  SELECT gameid,modid,\r\n    MAX(endorsements) AS endorsements\r\n  FROM endorsements\r\n  GROUP BY 1,2\r\n  ) AS e\r\n  ON (f.gameid = e.gameid and f.modid = e.modid)\r\nINNER JOIN mods AS m\r\n  ON (f.gameid = m.gameid and f.modid = m.modid)\r\nINNER JOIN (\r\n  SELECT gameid,modid,\r\n  MAX(totaldls) AS totaldls\r\n  FROM nexus_mod_stats_total\r\n  GROUP BY 1,2\r\n  ) AS t\r\n  ON (f.gameid = t.gameid AND f.modid = t.modid)\r\nWHERE\r\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\nGROUP BY f.modid,f.gameid,mod,game,pageviews\r\nORDER BY game",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Total Stats",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 77
+      },
+      "id": 280,
+      "panels": [],
+      "title": "Downloads & Views",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 78
+      },
+      "hiddenSeries": false,
+      "id": 48,
+      "interval": "1d",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_endorsements",
+          "format": "time_series",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "ALOV for ME1",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(\"time\",$__interval),\n  mod AS metric,\n  dailydls\nFROM nexus_mod_stats_daily AS d\nINNER JOIN mods AS m\n  ON (d.gameid = m.gameid AND d.modid = m.modid)\nINNER JOIN games AS g\n  ON (d.gameid = g.gameid)\nWHERE\n  $__timeFilter(\"time\") AND\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\nORDER BY game, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "endorsements"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "nexus_mods_stats_daily.pageviews"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "endorsements, nexus_mod_stats_daily",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "90d",
+      "timeRegions": [
+        {
+          "colorMode": "yellow",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "20:00",
+          "fromDayOfWeek": 5,
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "00:00",
+          "toDayOfWeek": 1
+        }
+      ],
+      "timeShift": null,
+      "title": "Daily Downloads (Nexus)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 78
+      },
+      "hiddenSeries": false,
+      "id": 253,
+      "interval": "1d",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_endorsements",
+          "format": "time_series",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "ALOV for ME1",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  $__timeGroup(\"time\",$__interval),\r\n  mod AS metric,\r\n  (CAST(dailydls AS FLOAT) / CAST(pageviews AS FLOAT)) AS rate\r\nFROM nexus_mod_stats_daily AS d\r\nINNER JOIN mods AS m\r\n  ON (d.gameid = m.gameid AND d.modid = m.modid)\r\nINNER JOIN games AS g\r\n  ON (d.gameid = g.gameid)\r\nWHERE\r\n  $__timeFilter(\"time\") AND\r\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\nORDER BY game, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "endorsements"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "nexus_mods_stats_daily.pageviews"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "endorsements, nexus_mod_stats_daily",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "90d",
+      "timeRegions": [
+        {
+          "colorMode": "yellow",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "20:00",
+          "fromDayOfWeek": 5,
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "00:00",
+          "toDayOfWeek": 1
+        }
+      ],
+      "timeShift": null,
+      "title": "Daily Downloads per Views",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 85
+      },
+      "hiddenSeries": false,
+      "id": 47,
+      "interval": "1d",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_endorsements",
+          "format": "time_series",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "ALOV for ME1",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(\"time\",$__interval),\n  mod AS metric,\n  pageviews\nFROM nexus_mod_stats_daily AS d\nINNER JOIN mods AS m\n  ON (d.gameid = m.gameid AND d.modid = m.modid)\nINNER JOIN games AS g\n  ON (d.gameid = g.gameid)\nWHERE\n  $__timeFilter(\"time\") AND\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\nORDER BY game, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "endorsements"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "nexus_mods_stats_daily.pageviews"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "endorsements, nexus_mod_stats_daily",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "90d",
+      "timeRegions": [
+        {
+          "colorMode": "yellow",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "20:00",
+          "fromDayOfWeek": 5,
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "00:00",
+          "toDayOfWeek": 1
+        }
+      ],
+      "timeShift": null,
+      "title": "Daily Page Views",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 85
+      },
+      "hiddenSeries": false,
+      "id": 254,
+      "interval": "1d",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_endorsements",
+          "format": "time_series",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "ALOV for ME1",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  $__timeGroup(\"time\",$__interval),\r\n  mod AS metric,\r\n  (rate/total) - 1 AS rrate\r\nFROM (\r\n  SELECT\r\n    d.gameid,\r\n    d.modid,\r\n    d.time,\r\n    (CAST(dailydls AS FLOAT) / CAST(pageviews AS FLOAT)) AS rate\r\n  FROM nexus_mod_stats_daily AS d\r\n  ) AS d\r\nINNER JOIN (\r\n  SELECT\r\n    d.gameid,\r\n    d.modid,\r\n    game,\r\n    CAST(SUM(dailydls) AS FLOAT) / CAST(SUM(pageviews) AS FLOAT) AS total\r\n  FROM nexus_mod_stats_daily AS d\r\n  INNER JOIN games AS g\r\n    ON (d.gameid = g.gameid)\r\n  WHERE\r\n    CONCAT(d.gameid,' ',d.modid) IN ($modid)\r\n  GROUP BY d.gameid,modid,game\r\n  ) AS t\r\n  ON (d.gameid = t.gameid AND d.modid = t.modid)\r\nINNER JOIN mods AS m\r\n  ON (d.gameid = m.gameid AND d.modid = m.modid)\r\nWHERE\r\n  $__timeFilter(\"time\") AND\r\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\nORDER BY game, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "endorsements"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "nexus_mods_stats_daily.pageviews"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "endorsements, nexus_mod_stats_daily",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "90d",
+      "timeRegions": [
+        {
+          "colorMode": "yellow",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "20:00",
+          "fromDayOfWeek": 5,
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "00:00",
+          "toDayOfWeek": 1
+        }
+      ],
+      "timeShift": null,
+      "title": "Daily Downloads per Views compared to Average",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 92
+      },
+      "id": 306,
+      "panels": [],
+      "title": "Endorsements",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 93
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": false,
+      "id": 42,
+      "interval": "1m",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_endorsements",
+          "format": "time_series",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "ALOV for ME1",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(\"time\",$__interval),\n  mod AS metric,\n  endorsements\nFROM endorsements AS e\nINNER JOIN mods AS m\n  ON (e.gameid = m.gameid AND e.modid = m.modid)\nINNER JOIN games AS g\n  ON (e.gameid = g.gameid)\nWHERE\n  $__timeFilter(\"time\") AND\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\nORDER BY game, time ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "endorsements"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "nexus_mods_stats_daily.pageviews"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "endorsements, nexus_mod_stats_daily",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [
+        {
+          "colorMode": "yellow",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "20:00",
+          "fromDayOfWeek": 5,
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "00:00",
+          "toDayOfWeek": 1
+        }
+      ],
+      "timeShift": null,
+      "title": "Endorsements",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_TIMESCALEDB}",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 93
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": false,
+      "id": 202,
+      "interval": "1d",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.6.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "alov_masseffect_endorsements",
+          "format": "time_series",
+          "group": [],
+          "instant": false,
+          "interval": "",
+          "legendFormat": "ALOV for ME1",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(\"time\",$__interval),\n  mod AS metric,\n  SUM(delta)\nFROM (\n  SELECT\n    gameid,\n    modid,\n    time,\n    endorsements - lag(endorsements) OVER (PARTITION BY modid ORDER BY time) AS delta\n  FROM endorsements\n  WHERE\n    $__timeFilter(time)\n  GROUP BY 1,2,3\n  ) AS e\nINNER JOIN mods AS m\n  ON (e.gameid = m.gameid AND e.modid = m.modid)\nINNER JOIN games AS g\n  ON (e.gameid = g.gameid)\nWHERE\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\nGROUP BY 1,2,game,m.gameid,e.modid\nORDER BY game, time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "endorsements"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "nexus_mods_stats_daily.pageviews"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "endorsements, nexus_mod_stats_daily",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "1M",
+      "timeRegions": [
+        {
+          "colorMode": "yellow",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "20:00",
+          "fromDayOfWeek": 5,
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "00:00",
+          "toDayOfWeek": 1
+        }
+      ],
+      "timeShift": null,
+      "title": "Daily Endorsements",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 22,
+  "style": "dark",
+  "tags": [
+    "masseffect",
+    "nexusmods",
+    "alov"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_TIMESCALEDB}",
+        "definition": "SELECT game FROM games;",
+        "hide": 0,
+        "includeAll": true,
+        "index": -1,
+        "label": "Game",
+        "multi": true,
+        "name": "game",
+        "options": [],
+        "query": "SELECT game FROM games;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_TIMESCALEDB}",
+        "definition": "SELECT\n  CONCAT(game,': ',mod) AS __text,\n  CONCAT(mods.gameid,' ',modid) AS __value\nFROM mods\nINNER JOIN games\n  ON mods.gameid = games.gameid\nWHERE game IN ($game);",
+        "hide": 0,
+        "includeAll": true,
+        "index": -1,
+        "label": "Mod",
+        "multi": true,
+        "name": "modid",
+        "options": [],
+        "query": "SELECT\n  CONCAT(game,': ',mod) AS __text,\n  CONCAT(mods.gameid,' ',modid) AS __value\nFROM mods\nINNER JOIN games\n  ON mods.gameid = games.gameid\nWHERE game IN ($game);",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "SELECT gameid FROM games",
+        "tags": [],
+        "tagsQuery": "SELECT game FROM games",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "10m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "ALOV stats for TimescaleDB",
+  "uid": "svA9qYCWz",
+  "variables": {
+    "list": []
+  },
+  "version": 51
+}
