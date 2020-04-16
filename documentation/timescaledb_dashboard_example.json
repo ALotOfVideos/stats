@@ -485,7 +485,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Unique Downloads by File",
+      "title": "Unique/Downloads by File",
       "transform": "table",
       "type": "table"
     },
@@ -1526,7 +1526,7 @@
         "dataLinks": []
       },
       "percentage": false,
-      "pluginVersion": "6.6.2",
+      "pluginVersion": "6.7.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1784,7 +1784,7 @@
           "legendFormat": "ALOV for ME1",
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  mod,\r\n  MAX(totaldls) AS totaldls,\r\n  SUM(f.uniquedls) AS uniquedls,\r\n  SUM(f.usize) AS usize,\r\n  SUM(f.dls) AS dls,\r\n  SUM(f.size) AS size,\r\n  pageviews,\r\n  MAX(endorsements) AS endorsements\r\nFROM (\r\n  SELECT\r\n    game,\r\n    s.gameid,\r\n    s.modid,\r\n    MAX(s.uniquedls) AS uniquedls,\r\n    MAX(s.dls) AS dls,\r\n    MAX(s.uniquedls)::bigint * MAX(filesizekb) AS usize,\r\n    MAX(s.dls)::bigint * MAX(filesizekb) AS size,\r\n    s.fileid\r\n  FROM nexus_mod_files_stats AS s\r\n  INNER JOIN nexus_mod_files AS f\r\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n  INNER JOIN games AS g\r\n    ON (s.gameid = g.gameid)\r\n  WHERE\r\n    CONCAT(s.gameid,' ',s.modid) IN ($modid)\r\n  GROUP BY 1,2,3,s.fileid\r\n            ) AS f\r\nINNER JOIN (\r\n  SELECT\r\n    gameid, modid,\r\n    SUM(pageviews) AS pageviews\r\n  FROM nexus_mod_stats_daily\r\n  GROUP BY 1,2\r\n  ) AS p\r\n  ON (f.gameid = p.gameid AND f.modid = p.modid)\r\nINNER JOIN endorsements AS e\r\n  ON (f.gameid = e.gameid and f.modid = e.modid)\r\nINNER JOIN mods AS m\r\n  ON (f.gameid = m.gameid and f.modid = m.modid)\r\nINNER JOIN nexus_mod_stats_total AS t\r\n  ON (f.gameid = t.gameid AND f.modid = t.modid)\r\nWHERE\r\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\nGROUP BY f.modid,f.gameid,mod,game,pageviews\r\nORDER BY game",
+          "rawSql": "SELECT\r\n  mod,\r\n  MAX(totaldls) AS totaldls,\r\n  SUM(f.uniquedls) AS uniquedls,\r\n  SUM(f.usize) AS usize,\r\n  SUM(f.dls) AS dls,\r\n  SUM(f.size) AS size,\r\n  pageviews,\r\n  MAX(endorsements) AS endorsements\r\nFROM (\r\n  SELECT\r\n    game,\r\n    s.gameid,\r\n    s.modid,\r\n    MAX(s.uniquedls) AS uniquedls,\r\n    MAX(s.dls) AS dls,\r\n    MAX(s.uniquedls)::bigint * MAX(filesizekb) AS usize,\r\n    MAX(s.dls)::bigint * MAX(filesizekb) AS size,\r\n    s.fileid\r\n  FROM nexus_mod_files_stats AS s\r\n  INNER JOIN nexus_mod_files AS f\r\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n  INNER JOIN games AS g\r\n    ON (s.gameid = g.gameid)\r\n  WHERE\r\n    CONCAT(s.gameid,' ',s.modid) IN ($modid)\r\n  GROUP BY 1,2,3,s.fileid\r\n            ) AS f\r\nINNER JOIN (\r\n  SELECT\r\n    gameid, modid,\r\n    SUM(pageviews) AS pageviews\r\n  FROM nexus_mod_stats_daily\r\n  GROUP BY 1,2\r\n  ) AS p\r\n  ON (f.gameid = p.gameid AND f.modid = p.modid)\r\nINNER JOIN (\r\n  SELECT gameid,modid,\r\n    MAX(endorsements) AS endorsements\r\n  FROM endorsements\r\n  GROUP BY 1,2\r\n  ) AS e\r\n  ON (f.gameid = e.gameid and f.modid = e.modid)\r\nINNER JOIN mods AS m\r\n  ON (f.gameid = m.gameid and f.modid = m.modid)\r\nINNER JOIN (\r\n  SELECT gameid,modid,\r\n  MAX(totaldls) AS totaldls\r\n  FROM nexus_mod_stats_total\r\n  GROUP BY 1,2\r\n  ) AS t\r\n  ON (f.gameid = t.gameid AND f.modid = t.modid)\r\nWHERE\r\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\nGROUP BY f.modid,f.gameid,mod,game,pageviews\r\nORDER BY game",
           "refId": "A",
           "select": [
             [
@@ -1814,8 +1814,35 @@
           "legendFormat": "ALOV for ME1",
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  'Total' AS mod,\r\n  SUM(totaldls) AS totaldls,\r\n  SUM(uniquedls) AS uniquedls,\r\n  SUM(usize) AS usize,\r\n  SUM(dls) AS dls,\r\n  SUM(size) AS size,\r\n  SUM(pageviews) AS pageviews,\r\n  SUM(endorsements) AS endorsements\r\nFROM (\r\n  SELECT\r\n    mod,\r\n    MAX(totaldls) AS totaldls,\r\n    SUM(f.uniquedls) AS uniquedls,\r\n    SUM(f.usize) AS usize,\r\n    SUM(f.dls) AS dls,\r\n    SUM(f.size) AS size,\r\n    pageviews,\r\n    MAX(endorsements) AS endorsements\r\n  FROM (\r\n    SELECT\r\n      game,\r\n      s.gameid,\r\n      s.modid,\r\n      MAX(s.uniquedls) AS uniquedls,\r\n      MAX(s.dls) AS dls,\r\n      MAX(s.uniquedls)::bigint * MAX(filesizekb) AS usize,\r\n      MAX(s.dls)::bigint * MAX(filesizekb) AS size,\r\n      s.fileid\r\n    FROM nexus_mod_files_stats AS s\r\n    INNER JOIN nexus_mod_files AS f\r\n      ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n    INNER JOIN games AS g\r\n      ON (s.gameid = g.gameid)\r\n    WHERE\r\n      CONCAT(s.gameid,' ',s.modid) IN ($modid)\r\n    GROUP BY 1,2,3,s.fileid\r\n              ) AS f\r\n  INNER JOIN (\r\n    SELECT\r\n      gameid, modid,\r\n      SUM(pageviews) AS pageviews\r\n    FROM nexus_mod_stats_daily\r\n    GROUP BY 1,2\r\n    ) AS p\r\n    ON (f.gameid = p.gameid AND f.modid = p.modid)\r\n  INNER JOIN endorsements AS e\r\n    ON (f.gameid = e.gameid and f.modid = e.modid)\r\n  INNER JOIN mods AS m\r\n    ON (f.gameid = m.gameid and f.modid = m.modid)\r\n  INNER JOIN nexus_mod_stats_total AS t\r\n    ON (f.gameid = t.gameid AND f.modid = t.modid)\r\n  WHERE\r\n    CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\n  GROUP BY f.modid,f.gameid,mod,game,pageviews\r\n  ORDER BY game\r\n  ) AS t",
+          "rawSql": "SELECT\r\n  'Total' AS mod,\r\n  SUM(totaldls) AS totaldls,\r\n  SUM(uniquedls) AS uniquedls,\r\n  SUM(usize) AS usize,\r\n  SUM(dls) AS dls,\r\n  SUM(size) AS size,\r\n  SUM(pageviews) AS pageviews,\r\n  SUM(endorsements) AS endorsements\r\nFROM (\r\n  SELECT\r\n    mod,\r\n    MAX(totaldls) AS totaldls,\r\n    SUM(f.uniquedls) AS uniquedls,\r\n    SUM(f.usize) AS usize,\r\n    SUM(f.dls) AS dls,\r\n    SUM(f.size) AS size,\r\n    pageviews,\r\n    MAX(endorsements) AS endorsements\r\n  FROM (\r\n    SELECT\r\n      game,\r\n      s.gameid,\r\n      s.modid,\r\n      MAX(s.uniquedls) AS uniquedls,\r\n      MAX(s.dls) AS dls,\r\n      MAX(s.uniquedls)::bigint * MAX(filesizekb) AS usize,\r\n      MAX(s.dls)::bigint * MAX(filesizekb) AS size,\r\n      s.fileid\r\n    FROM nexus_mod_files_stats AS s\r\n    INNER JOIN nexus_mod_files AS f\r\n      ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n    INNER JOIN games AS g\r\n      ON (s.gameid = g.gameid)\r\n    WHERE\r\n      CONCAT(s.gameid,' ',s.modid) IN ($modid)\r\n    GROUP BY 1,2,3,s.fileid\r\n              ) AS f\r\n  INNER JOIN (\r\n    SELECT\r\n      gameid, modid,\r\n      SUM(pageviews) AS pageviews\r\n    FROM nexus_mod_stats_daily\r\n    GROUP BY 1,2\r\n    ) AS p\r\n    ON (f.gameid = p.gameid AND f.modid = p.modid)\r\n  INNER JOIN (\r\n    SELECT gameid,modid,\r\n      MAX(endorsements) AS endorsements\r\n    FROM endorsements\r\n    GROUP BY 1,2\r\n    ) AS e\r\n    ON (f.gameid = e.gameid and f.modid = e.modid)\r\n  INNER JOIN mods AS m\r\n    ON (f.gameid = m.gameid and f.modid = m.modid)\r\n  INNER JOIN (\r\n    SELECT gameid,modid,\r\n    MAX(totaldls) AS totaldls\r\n    FROM nexus_mod_stats_total\r\n    GROUP BY 1,2\r\n    ) AS t\r\n    ON (f.gameid = t.gameid AND f.modid = t.modid)\r\n  WHERE\r\n    CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\n  GROUP BY f.modid,f.gameid,mod,game,pageviews\r\n  ORDER BY game\r\n  ) AS t",
           "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": true,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  mod,\r\n  MAX(totaldls) AS totaldls,\r\n  SUM(f.uniquedls) AS uniquedls,\r\n  SUM(f.usize) AS usize,\r\n  SUM(f.dls) AS dls,\r\n  SUM(f.size) AS size,\r\n  pageviews,\r\n  MAX(endorsements) AS endorsements\r\nFROM (\r\n  SELECT\r\n    game,\r\n    s.gameid,\r\n    s.modid,\r\n    MAX(s.uniquedls) AS uniquedls,\r\n    MAX(s.dls) AS dls,\r\n    MAX(s.uniquedls)::bigint * MAX(filesizekb) AS usize,\r\n    MAX(s.dls)::bigint * MAX(filesizekb) AS size,\r\n    s.fileid\r\n  FROM nexus_mod_files_stats AS s\r\n  INNER JOIN nexus_mod_files AS f\r\n    ON (s.gameid = f.gameid AND s.modid = f.modid AND s.fileid = f.fileid)\r\n  INNER JOIN games AS g\r\n    ON (s.gameid = g.gameid)\r\n  WHERE\r\n    CONCAT(s.gameid,' ',s.modid) IN ($modid)\r\n  GROUP BY 1,2,3,s.fileid\r\n            ) AS f\r\nINNER JOIN (\r\n  SELECT\r\n    gameid, modid,\r\n    SUM(pageviews) AS pageviews\r\n  FROM nexus_mod_stats_daily\r\n  GROUP BY 1,2\r\n  ) AS p\r\n  ON (f.gameid = p.gameid AND f.modid = p.modid)\r\nINNER JOIN (\r\n  SELECT gameid,modid,\r\n    MAX(endorsements) AS endorsements\r\n  FROM endorsements\r\n  GROUP BY 1,2\r\n  ) AS e\r\n  ON (f.gameid = e.gameid and f.modid = e.modid)\r\nINNER JOIN mods AS m\r\n  ON (f.gameid = m.gameid and f.modid = m.modid)\r\nINNER JOIN (\r\n  SELECT gameid,modid,\r\n  MAX(totaldls) AS totaldls\r\n  FROM nexus_mod_stats_total\r\n  GROUP BY 1,2\r\n  ) AS t\r\n  ON (f.gameid = t.gameid AND f.modid = t.modid)\r\nWHERE\r\n  CONCAT(m.gameid,' ',m.modid) IN ($modid)\r\nGROUP BY f.modid,f.gameid,mod,game,pageviews\r\nORDER BY game",
+          "refId": "C",
           "select": [
             [
               {
@@ -2696,7 +2723,7 @@
       }
     }
   ],
-  "refresh": "10m",
+  "refresh": "5m",
   "schemaVersion": 22,
   "style": "dark",
   "tags": [
@@ -2755,7 +2782,7 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
