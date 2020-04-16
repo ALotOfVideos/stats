@@ -4,4 +4,4 @@ services:
   - docker
 
 script:
-  - docker build -t carlad/sinatra .
+  - docker build -t alov/nexus-mods-stats .
