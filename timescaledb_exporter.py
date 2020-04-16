@@ -20,12 +20,10 @@ class TimescaleDBStatsCollector(StatsCollector):
         with self.conn:
             with self.conn.cursor() as curs:
                 curs.execute("CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;")
-                # self.conn.commit()
                 curs.execute("""CREATE TABLE IF NOT EXISTS games (
                                 gameid  INTEGER     PRIMARY KEY,
                                 game    TEXT        UNIQUE NOT NULL
                                 );""")
-                # self.conn.commit()
                 curs.execute("""CREATE TABLE IF NOT EXISTS mods (
                                 gameid      INTEGER     REFERENCES games ON DELETE RESTRICT,
                                 modid       INTEGER     NOT NULL,
@@ -33,7 +31,6 @@ class TimescaleDBStatsCollector(StatsCollector):
                                 picture_url TEXT                ,
                                 PRIMARY KEY (gameid, modid)
                                 );""")
-                # self.conn.commit()
                 curs.execute("""CREATE TABLE IF NOT EXISTS endorsements (
                                 gameid          INTEGER     REFERENCES games ON DELETE RESTRICT,
                                 modid           INTEGER     NOT NULL,
@@ -42,9 +39,7 @@ class TimescaleDBStatsCollector(StatsCollector):
                                 FOREIGN KEY (gameid, modid) REFERENCES mods (gameid, modid) ON DELETE RESTRICT,
                                 PRIMARY KEY (gameid, modid, time)
                                 );""")
-                # self.conn.commit()
                 curs.execute("SELECT create_hypertable('endorsements', 'time', if_not_exists => TRUE);")
-                # self.conn.commit()
                 curs.execute("""CREATE TABLE IF NOT EXISTS nexus_mod_stats_total (
                                 gameid          INTEGER     REFERENCES games ON DELETE RESTRICT,
                                 modid           INTEGER     NOT NULL,
@@ -53,9 +48,7 @@ class TimescaleDBStatsCollector(StatsCollector):
                                 FOREIGN KEY (gameid, modid) REFERENCES mods (gameid, modid) ON DELETE RESTRICT,
                                 PRIMARY KEY (gameid, modid, time)
                                 );""")
-                # self.conn.commit()
                 curs.execute("SELECT create_hypertable('nexus_mod_stats_total', 'time', if_not_exists => TRUE);")
-                # self.conn.commit()
                 curs.execute("""CREATE TABLE IF NOT EXISTS nexus_mod_stats_daily (
                                 gameid          INTEGER     REFERENCES games ON DELETE RESTRICT,
                                 modid           INTEGER     NOT NULL,
@@ -65,9 +58,7 @@ class TimescaleDBStatsCollector(StatsCollector):
                                 FOREIGN KEY (gameid, modid) REFERENCES mods (gameid, modid) ON DELETE RESTRICT,
                                 PRIMARY KEY (gameid, modid, time)
                                 );""")
-                # self.conn.commit()
                 curs.execute("SELECT create_hypertable('nexus_mod_stats_daily', 'time', if_not_exists => TRUE);")
-                # self.conn.commit()
                 curs.execute("""CREATE TABLE IF NOT EXISTS nexus_mod_files (
                                 gameid          INTEGER     REFERENCES games ON DELETE RESTRICT,
                                 modid           INTEGER     NOT NULL,
@@ -79,7 +70,6 @@ class TimescaleDBStatsCollector(StatsCollector):
                                 FOREIGN KEY (gameid, modid) REFERENCES mods (gameid, modid) ON DELETE RESTRICT,
                                 PRIMARY KEY (gameid, modid, fileid)
                                 );""")
-                # self.conn.commit()
                 curs.execute("""CREATE TABLE IF NOT EXISTS nexus_mod_files_stats (
                                 gameid          INTEGER     REFERENCES games ON DELETE RESTRICT,
                                 modid           INTEGER     NOT NULL,
@@ -92,15 +82,10 @@ class TimescaleDBStatsCollector(StatsCollector):
                                 FOREIGN KEY (gameid, modid, fileid) REFERENCES nexus_mod_files (gameid, modid, fileid) ON DELETE RESTRICT,
                                 PRIMARY KEY (gameid, modid, fileid, time)
                                 );""")
-                # self.conn.commit()
                 curs.execute("SELECT create_hypertable('nexus_mod_files_stats', 'time', if_not_exists => TRUE);")
-                # self.conn.commit()
                 # curs.execute("CREATE TABLE IF NOT EXISTS nextcloud_files ();")
-                # self.conn.commit()
                 # curs.execute("CREATE TABLE IF NOT EXISTS nextcloud_files_stats ();")
-                # self.conn.commit()
                 # curs.execute("SELECT create_hypertable('nextcloud_files_stats', 'time', if_not_exists => TRUE);")
-                # self.conn.commit()
 
     def _insertMods(self):
         with self.conn:

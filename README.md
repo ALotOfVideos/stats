@@ -15,10 +15,12 @@ Collects and tracks various stats of your Nexus Mods mods.
 1. Install dependencies: `pip install toml`. Consider using a [virtual environment](https://docs.python.org/3/tutorial/venv.html).
     - for Prometheus: `pip install prometheus_client`
     - for TimescaleDB: install the PostgreSQL development package (e.g. `libpq-dev` on Debian/Ubuntu, `libpqxx-devel` on Fedora) and `pip install psycopg2`
-1. Copy `config.toml.example` to `config.toml`. Modify it to your needs and list the games and mods you want to track. Read the comments for more information on how to format your settings.
+1. Copy `documentation/config.toml.example` to `config.toml`. Modify it to your needs and list the games and mods you want to track. Read the comments for more information on how to format your settings.
 1. Get an API key from https://www.nexusmods.com/users/myaccount?tab=api and save it to your `config.toml`. Take care that nobody but you can access your API key!
 
 ## Usage
+
+The recommended setup is to set up `timescaledb_exporter.py` for use with timescaleDB and Grafana.
 
 To print stats to stdout once (e.g. testing your setup), run `./crawler.py`, or pipe to file: `./crawler.py > crawler.out`.
 
@@ -55,6 +57,7 @@ Also included is a `docker-compose.yml`, which allows you to automatically and e
 1. If using TimescaleDB:
     1. Create your services `docker-compose up --no-start`, but start only the PostgreSQL server `docker start stats_timescaledb`.
     1. Connect to your PostgreSQL server using `docker run -it --rm --network stats_default timescale/timescaledb:latest-pg9.6 psql -h stats_timescaledb -U postgres` and create your database (`CREATE DATABASE "nm-stats";`).
+1. Set up your `config.toml` ([instructions](#installation))
 1. Deploy your stack: `docker-compose up -d` and access grafana at `http://localhost:3000`
 1. If you have a domain and want your Grafana public facing with https, add a reverse proxy (e.g. nginx with letsencrypt). This can be done with docker, too: e.g. [nginx-certbot](https://github.com/wmnnd/nginx-certbot), [docker-letsencrypt](https://github.com/linuxserver/docker-letsencrypt). 
 
