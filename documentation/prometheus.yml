@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 5s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: 'my-nm-stats'
+
+scrape_configs:
+  - job_name: "nm-stats"
+    metrics_path: "/"
+
+    scrape_interval: 300s
+
+    static_configs:
+      - targets: ['stats_exporter:8000']

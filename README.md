@@ -5,7 +5,7 @@ Collects and tracks various stats of your Nexus Mods mods.
 ## Contents
 1. [Installation](#installation)
 1. [Usage](#usage)
-1. [Docker Usage](#docker-usage)
+1. [Installation and usage with Docker](#installation-and-usage-with-docker)
 1. [Constributing](#contributing)
 1. [Screenshots](#screenshots)
 
@@ -36,8 +36,27 @@ To export metrics to [TimescaleDB](https://www.timescale.com/):
 To display metrics with [Grafana](https://grafana.com/):
 1. Set up your Grafana dashboards using the provided Prometheus metrics and labels (name, version, category), or PostgreSQL tables and columns. Find more info and examples in the [documentation](documentation) folder.
 1. The TimescaleDB example dashboard requires some community plugins: `grafana-cli plugins install aidanmountford-html-panel`
- 
-## Docker Usage
+
+## Installation and usage with Docker
+
+This repository includes a `Dockerfile`, enabling you to easily build a docker container for this app, automatically installing all required dependincies while leaving your system unchanged.
+1. `git clone` this repository to your server
+1. Build the container: `docker build -t alov/nexus-mods-stats .`
+1. Run an exporter:
+```
+docker run -it -v /absolute/path/to/your/config.toml:/nm-stats/config.toml alov/nexus-mods-stats python ./timescaledb_exporter.py
+```
+
+Also included is a `docker-compose.yml`, which allows you to automatically and easily deploy the whole stack of exporter, database and Grafana using docker.
+1. `git clone` this repository to your server
+1. Edit `docker-compose.yml` to your needs (uncomment Prometheus or TimescaleDB)
+1. If using Prometheus:
+    1. Edit `documentation/prometheus.yml` if necessary, especially the scrape interval.
+1. If using TimescaleDB:
+    1. Create your services `docker-compose up --no-start`, but start only the PostgreSQL server `docker start stats_timescaledb`.
+    1. Connect to your PostgreSQL server using `docker run -it --rm --network stats_default timescale/timescaledb:latest-pg9.6 psql -h stats_timescaledb -U postgres` and create your database (`CREATE DATABASE "nm-stats";`).
+1. Deploy your stack: `docker-compose up -d` and access grafana at `http://localhost:3000`
+1. If you have a domain and want your Grafana public facing with https, add a reverse proxy (e.g. nginx with letsencrypt). This can be done with docker, too: e.g. [nginx-certbot](https://github.com/wmnnd/nginx-certbot), [docker-letsencrypt](https://github.com/linuxserver/docker-letsencrypt). 
 
 ## Contributing
 
