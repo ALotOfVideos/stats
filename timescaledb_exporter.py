@@ -99,7 +99,8 @@ class TimescaleDBStatsCollector(StatsCollector):
                 modquery = 'INSERT INTO mods VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING;'
                 for g,mods in self.endorsements.items():
                     for m,e in mods.items():
-                        curs.execute(modquery, (self.crawler.gameid[g], m, e['name'], e['picture_url']))
+                        if e.get('name') is not None and e.get('picture_url') is not None:
+                            curs.execute(modquery, (self.crawler.gameid[g], m, e['name'], e['picture_url']))
 
     def collect(self):
         self._createTables()

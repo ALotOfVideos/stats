@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import urllib.request as r
+import urllib.error
 import json
 import os.path
 import csv
@@ -52,21 +53,27 @@ class StatsCrawler:
 
         for g in self.games:
             for m in self.mods[g].keys():
-                # get mod stats
-                url = self.api + self.endpoint['mod'].format(g, m)
-                req = r.Request(url, headers=self.headers)
-                response = r.urlopen(req)
-                endorsements[g][m] = json.loads(response.read())
+                try:
+                    # get mod stats
+                    url = self.api + self.endpoint['mod'].format(g, m)
+                    req = r.Request(url, headers=self.headers)
+                    response = r.urlopen(req)
+                    endorsements[g][m] = json.loads(response.read())
+                except urllib.error.HTTPError as e:
+                    print(e)
 
         for g in self.games:
             for m,categories in self.mods[g].items():
-                # get list of files
-                url = self.api + self.endpoint['files'].format(g, m, ','.join(categories))
-                req = r.Request(url, headers=self.headers)
-                response = r.urlopen(req)
-                l = json.loads(response.read()).get('files', [])
-                for f in l:
-                    files[g][m][f.get('file_id', 0)] = f
+                try:
+                    # get list of files
+                    url = self.api + self.endpoint['files'].format(g, m, ','.join(categories))
+                    req = r.Request(url, headers=self.headers)
+                    response = r.urlopen(req)
+                    l = json.loads(response.read()).get('files', [])
+                    for f in l:
+                        files[g][m][f.get('file_id', 0)] = f
+                except urllib.error.HTTPError as e:
+                    print(e)
 
         # match nexus' cache busting timestamp format
         timestamp = int(time.timestamp() * 1000000 / 300000000)
