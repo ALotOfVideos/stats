@@ -80,20 +80,25 @@ class StatsCrawler:
 
         for g in self.games:
             # get download stats
-            with r.urlopen(r.Request(self.dl_stats_csv.format(self.gameid[g],timestamp), headers=self.spoof)) as dl_csv:
-                # decode binary format
-                dl_csv = dl_csv.read().decode('utf-8').split('\n')
-                for row in csv.reader(dl_csv):
-                    # remove lines that don't match the expected id,dls,unique format
-                    if len(row) < 3:
-                        continue
-                    stats[g][int(row[0])] = { 'downloads': int(row[1]), 'unique_downloads': int(row[2])}
+            try:
+                with r.urlopen(r.Request(self.dl_stats_csv.format(self.gameid[g],timestamp), headers=self.spoof)) as dl_csv:
+                    # decode binary format
+                    dl_csv = dl_csv.read().decode('utf-8').split('\n')
+                    for row in csv.reader(dl_csv):
+                        # remove lines that don't match the expected id,dls,unique format
+                        if len(row) < 3:
+                            continue
+                        stats[g][int(row[0])] = { 'downloads': int(row[1]), 'unique_downloads': int(row[2])}
+            except urllib.error.HTTPError as e:
+                print(e)
 
         # fill info in with file details
         for g,mod in files.items():
             for m,f in mod.items():
                 for i,v in f.items():
-                    v.update(stats[g][i])
+                    if g in stats:
+                        if i in stats[g]:
+                            v.update(stats[g][i])
 
         for g in self.games:
             for m in self.mods[g]:
