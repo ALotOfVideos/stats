@@ -32,16 +32,21 @@ class StatsCrawler:
             with open(self.game_id_file, 'r') as f:
                 gameid = json.load(f)
         else:
-            gameid = dict()
-            for g in self.games:
-                # get game id for later
-                url = self.api + self.endpoint['games'].format(g)
-                req = r.Request(url, headers=self.headers)
-                response = r.urlopen(req)
-                gameid[g] = json.loads(response.read()).get('id')
+            try:
+                gameid = dict()
+                for g in self.games:
+                    # get game id for later
+                    url = self.api + self.endpoint['games'].format(g)
+                    req = r.Request(url, headers=self.headers)
+                    response = r.urlopen(req)
+                    gameid[g] = json.loads(response.read()).get('id')
 
-            with open(self.game_id_file, 'w') as f:
-                json.dump(gameid, f)
+                with open(self.game_id_file, 'w') as f:
+                    json.dump(gameid, f)
+            except urllib.error.HTTPError as e:
+                print("Couldn't fetch game IDs! Details:")
+                print(e)
+                exit(1)
 
         return gameid
 

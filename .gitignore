@@ -1,5 +1,7 @@
+.idea
 .python-version
 __pycache__
 config.toml
 game-ids.json
 last-mod-stats-update.json
+data/*
